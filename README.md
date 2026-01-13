@@ -18,18 +18,88 @@ This project implements a **Hybrid AI Architecture** to solve the "Black Box" pr
 
 ```mermaid
 graph LR
-    User[🏥 Nurse/Doctor] -->|Symptoms Input| API[⚡ FastAPI Gateway]
+    %% Definição dos Nós
+    User["🏥 Nurse/Doctor"]
+    API["⚡ FastAPI Gateway"]
+    ML["📈 XGBoost Model"]
+    RAG{"🧠 LangChain Agent"}
+    VectorDB[("📚 Protocols DB")]
+    OutputNode["JSON Output"]
+
+    %% Fluxo Principal
+    User -->|"Symptoms Input"| API
     
-    subgraph "Deterministic Layer (Speed & Precision)"
-        API -->|Features| ML[📈 XGBoost Model]
-        ML -->|Risk Level (1-5)| Result
+    subgraph "Deterministic Layer"
+        API -->|"Features"| ML
+        ML -->|"Risk Level (1-5)"| OutputNode
     end
     
-    subgraph "Generative Layer (Reasoning & Grounding)"
-        API -->|Context + Prediction| RAG{🧠 LangChain Agent}
-        RAG -->|Retrieve Protocols| VectorDB[(📚 Protocols DB)]
+    subgraph "Generative Layer"
+        API -->|"Context + Prediction"| RAG
+        RAG -->|"Retrieve Protocols"| VectorDB
         VectorDB --> RAG
-        RAG -->|Clinical Explanation| Result
+        RAG -->|"Clinical Explanation"| OutputNode
     end
     
-    Result[JSON Output] --> User
+    OutputNode --> User
+```
+
+## 🚀 Key Features
+- 🎯 Deterministic Triage (XGBoost): A trained gradient boosting model that predicts the patient's risk level (Red, Orange, Yellow, Green, Blue) based on vital signs and symptoms. prioritizing Recall to minimize false negatives.
+- 🧠 Clinical Explainability (GenAI): An LLM Agent (anchored via RAG) that explains why the model predicted that risk level, citing specific medical protocols to prevent hallucinations.
+- ⚡ High-Performance API: Built with FastAPI and Pydantic for strict data validation.
+- 🔍 MLOps Integrated: Experiment tracking with MLflow (in progress).
+
+## 🛠️ Tech Stack
+- Core: Python 3.11
+- API: FastAPI, Uvicorn
+- Machine Learning: XGBoost, Scikit-Learn, Pandas
+- GenAI / Orchestration: LangChain, OpenAI API (or DeepSeek)
+- Database: Vector Store (ChromaDB/FAISS) for medical protocols.
+- Infrastructure: Docker, Docker Compose
+
+## 📂 Project Structure
+```Bash
+
+hybrid-clinical-triage/
+├── data/                   # Synthetic datasets for training
+├── models/                 # Serialized XGBoost models (.json/.pkl)
+├── src/
+│   ├── api/                # FastAPI routes and controllers
+│   ├── core/               # Configuration and logging
+│   ├── ml/                 # Training and inference logic (XGBoost)
+│   ├── llm/                # LangChain chains and prompts
+│   └── schemas/            # Pydantic models for request/response
+├── tests/                  # Pytest unit and integration tests
+├── docker-compose.yml
+└── README.md
+
+```
+
+## ⚡ Quick Start
+### Prerequisites
+1. Docker & Docker Compose
+2. Python 3.11+ (if running locally)
+
+### Running with Docker
+
+```Bash
+
+# Clone the repository
+git clone [https://github.com/andrecodea/hybrid-clinical-triage.git](https://github.com/andrecodea/hybrid-clinical-triage.git)
+
+# Build and Run
+docker-compose up --build
+The API will be available at http://localhost:8000/docs.
+
+```
+
+## 🗺️ Roadmap
+- [x] Project Structure & Architecture Design
+- [ ] Train XGBoost Baseline Model (Synthetic Data)
+- [ ] Implement FastAPI Endpoints
+- [ ] Integrate LangChain for Explanations
+- [ ] Dockerize Application
+- [ ] Add MLflow for Metric Tracking
+
+Developed by André Codea
