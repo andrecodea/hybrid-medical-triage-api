@@ -56,7 +56,7 @@ graph LR
 - Machine Learning: XGBoost, Scikit-Learn, Pandas
 - GenAI / Orchestration: LangChain, OpenAI API (or DeepSeek)
 - Database: Vector Store (ChromaDB/FAISS) for medical protocols.
-- Infrastructure: Docker, Docker Compose
+- Infrastructure: Docker, MLflow
 
 ## 📂 Project Structure
 ```Bash
