@@ -25,6 +25,10 @@ graph LR
     RAG{"🧠 LangChain Agent"}
     VectorDB[("📚 Protocols DB")]
     OutputNode["JSON Output"]
+    
+    %% Nós de Observabilidade
+    MLflow["🧪 MLflow"]
+    LangSmith["🛡️ LangSmith"]
 
     %% Fluxo Principal
     User -->|"Symptoms Input"| API
@@ -39,6 +43,13 @@ graph LR
         RAG -->|"Retrieve Protocols"| VectorDB
         VectorDB --> RAG
         RAG -->|"Clinical Explanation"| OutputNode
+    end
+
+    %% Camada de Observabilidade (Monitoramento)
+    subgraph "Observability & MLOps"
+        direction TB
+        MLflow -.->|"Metric Tracking"| ML
+        LangSmith -.->|"Traces & Token Cost"| RAG
     end
     
     OutputNode --> User
